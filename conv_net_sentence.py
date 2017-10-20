@@ -278,7 +278,8 @@ def make_idx_data_cv(revs, word_idx_map, cv, max_l=51, k=300, filter_h=5):
         if rev["split"]==cv:            
             test.append(sent)        
         else:  
-            train.append(sent)   
+            train.append(sent)
+    print train
     train = np.array(train,dtype="int")
     test = np.array(test,dtype="int")
     return [train, test]     
@@ -289,8 +290,11 @@ if __name__=="__main__":
     x = cPickle.load(open("mr.p","rb"))
     revs, W, W2, word_idx_map, vocab = x[0], x[1], x[2], x[3], x[4]
     print "data loaded!"
-    mode= sys.argv[1]
-    word_vectors = sys.argv[2]    
+    #mode= sys.argv[1]
+    #word_vectors = sys.argv[2]
+    mode = "-nonstatic"
+    #changed input file from w2v to PubMed
+    word_vectors = "-word2vec"
     if mode=="-nonstatic":
         print "model architecture: CNN-non-static"
         non_static=True
@@ -307,7 +311,7 @@ if __name__=="__main__":
     results = []
     r = range(0,10)    
     for i in r:
-        datasets = make_idx_data_cv(revs, word_idx_map, i, max_l=56,k=300, filter_h=5)
+        datasets = make_idx_data_cv(revs, word_idx_map, i, max_l=300,k=200, filter_h=5)
         perf = train_conv_net(datasets,
                               U,
                               lr_decay=0.95,
