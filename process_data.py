@@ -46,13 +46,13 @@ def build_data_cv(data_folder, cv=10, clean_string=True):
             revs.append(datum)
     return revs, vocab
     
-def get_W(word_vecs, k=300):
+def get_W(word_vecs, k=200):
     """
     Get word matrix. W[i] is the vector for word indexed by i
     """
     vocab_size = len(word_vecs)
     word_idx_map = dict()
-    W = np.zeros(shape=(vocab_size+1, k), dtype='float32')            
+    W = np.zeros(shape=(vocab_size+1, k), dtype='float32')
     W[0] = np.zeros(k, dtype='float32')
     i = 1
     for word in word_vecs:
@@ -85,7 +85,7 @@ def load_bin_vec(fname, vocab):
                 f.read(binary_len)
     return word_vecs
 
-def add_unknown_words(word_vecs, vocab, min_df=1, k=300):
+def add_unknown_words(word_vecs, vocab, min_df=1, k=200):
     """
     For words that occur in at least min_df documents, create a separate word vector.    
     0.25 is chosen so the unknown vectors have (approximately) same variance as pre-trained ones
@@ -123,10 +123,15 @@ def clean_str_sst(string):
     return string.strip().lower()
 
 if __name__=="__main__":    
-    w2v_file = sys.argv[1]     
-    data_folder = ["rt-polarity.pos","rt-polarity.neg"]    
+    #w2v_file = sys.argv[1]
+    w2v_file = '/Users/romapatel/Desktop/CNN_sentence/medical_data/PubMed-w2v.txt'
+    path = '/Users/romapatel/Desktop/CNN_sentence/'
+    data_folder = [path + "medical_data/positive.txt", path + "medical_data/negative.txt"]    
+
+    #data_folder = [path + "sentiment_data/rt-polarity.pos", path + "sentiment_data/rt-polarity.neg"]    
     print "loading data...",        
     revs, vocab = build_data_cv(data_folder, cv=10, clean_string=True)
+    print vocab
     max_l = np.max(pd.DataFrame(revs)["num_words"])
     print "data loaded!"
     print "number of sentences: " + str(len(revs))
